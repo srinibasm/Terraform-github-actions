@@ -16,23 +16,17 @@ jobs:
       AWS_DEFAULT_REGION: us-east-2
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
+      - uses: hashicorp/setup-terraform@v3
 
-      - name: Terraform Init
-        run: terraform init
+      - run: terraform init
 
-      - name: Terraform Validate
-        run: terraform validate
+      - run: terraform validate
 
-      - name: Terraform Plan
-        run: terraform plan -out=tfplan
+      - run: terraform plan -out=tfplan
 
-      - name: Upload Plan Artifact
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
           name: tfplan
           path: tfplan
@@ -41,7 +35,7 @@ jobs:
     name: Terraform Apply
     runs-on: ubuntu-latest
     needs: plan
-    environment: production   # requires approval
+    environment: production
 
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -49,24 +43,19 @@ jobs:
       AWS_DEFAULT_REGION: us-east-2
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
+      - uses: hashicorp/setup-terraform@v3
 
-      - name: Terraform Init
-        run: terraform init
+      - run: terraform init
 
-      - name: Download Plan Artifact
-        uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v4
         with:
           name: tfplan
 
-      - name: Terraform Apply
-        run: terraform apply -auto-approve tfplan
+      - run: terraform apply -auto-approve tfplan
 
-         destroy:   👈 ADD HERE (after apply)
+  destroy:
     name: Terraform Destroy
     runs-on: ubuntu-latest
     needs: apply
