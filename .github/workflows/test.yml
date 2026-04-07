@@ -1,11 +1,24 @@
-name: Self Hosted Test
+name: Terraform CI
 
 on: [push]
 
 jobs:
-  test:
+  terraform:
     runs-on: self-hosted
 
     steps:
-      - name: Say Hello
-        run: echo "Hello from srinibas!"
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        run: |
+          sudo yum install -y unzip
+          curl -o terraform.zip https://releases.hashicorp.com/terraform/1.6.6/terraform_1.6.6_linux_amd64.zip
+          unzip terraform.zip
+          sudo mv terraform /usr/local/bin/
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Plan
+        run: terraform plan
